@@ -1,3 +1,9 @@
+commit fd48ce3be4c302e35f3f6f7b70e604879ef159b0
+Author: Alexander Sandoval <alexander.sf0828@gmail.com>
+Date:   Sat Jan 28 11:45:48 2017 -0430
+
+    Configurar la BD de XAMPP. Configurar el idioma español. Crear el autenticador. Crear el modelo.
+
 commit c55293562501c8223d05f33b9426aa7357ab1ad2
 Author: Alexander Sandoval <alexander.sf0828@gmail.com>
 Date:   Fri Jan 27 14:30:53 2017 -0430
