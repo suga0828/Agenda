@@ -13,7 +13,10 @@ class AddContactsFile extends Migration
      */
     public function up()
     {
-        //
+        //modificar la tabla contactos
+        Schema::table('contacts', function (Blueprint $table) {
+            $table->string('file');
+        });
     }
 
     /**
@@ -23,6 +26,9 @@ class AddContactsFile extends Migration
      */
     public function down()
     {
-        //
+        //eliminar campo creado
+        Schema::table('contacts', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
     }
 }

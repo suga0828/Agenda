@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Contact;
+use Storage;
 
 class Contacts extends Controller
 {
@@ -13,7 +15,7 @@ class Contacts extends Controller
      */
     public function index()
     {
-        //
+        dd('aqui');
     }
 
     /**
@@ -23,7 +25,7 @@ class Contacts extends Controller
      */
     public function create()
     {
-        //
+        return view('contacts.create');
     }
 
     /**
@@ -35,9 +37,31 @@ class Contacts extends Controller
     //parametro inyeccion de servicios 
     //que enlaza las reglas de la clase request que declaramos 
     //para validar el formulario antes que entre al controlador
-    public function store(\App\Http\Requests\Contacts $request)
+    /*public function store(\App\Http\Requests\Contacts $request)
     {
         dd($request->name);
+    }*/
+
+    public function store(Request $request){
+        $this->validate($request,[
+            'name'=>'required',
+            'email'=>'required|email',
+            'contactfile'=>'required'
+        ]);
+        $user=\Auth::user();
+        $contacts= new \App\Contact();
+        $contacts->name=$request->name;
+        $contacts->email=$request->email;
+        $img=$request->contactfile;
+        $name_file=ltrim(time().'_'.$img->getClientOriginalName());
+        Storage::disk('imgContacts')->put($name_file,file_get_contents($img->getRealPath()));
+        $contacts->file=$name_file;
+        if($user->contacts()->save($contacts)->save()){
+            //variable de session 
+            return back()->with('msj','Datos guardados con exito');
+        }else{
+            return back()->with('nomsj','Error en la base de datos');
+        }
     }
 
     /**
