@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Contact;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        
+        $objContact= new \App\Contact();
+        $user=\Auth::user();
+        $data=$user->contacts()->get()->all();
+        return view('home')->with('contacts',$data);
     }
 }
