@@ -18,3 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
+
+//ejemplo como trabajar ruta y escribir en log
+Route::get('test', function () {
+    \Log::info('aqui escribiendo por consola');
+});
+
+//un resource a diferencias de las rutas convencionales 
+//crea una ruta de cada metodo que se encuentra en el controlador 
+Route::resource('contacts', 'Contacts');
