@@ -48,7 +48,7 @@ return [
             'root' => storage_path('app'),
         ],
 
-    'imgContacts' => [
+        'imgContacts' => [
             'driver' => 'local',
             'root' => public_path('imgContacts'),
         ],

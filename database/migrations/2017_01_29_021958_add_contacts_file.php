@@ -15,7 +15,7 @@ class AddContactsFile extends Migration
     {
         //modificar la tabla contactos
         Schema::table('contacts', function (Blueprint $table) {
-            $table->string('file');
+            $table->string('file')->notnull();;
         });
     }
 
