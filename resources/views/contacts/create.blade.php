@@ -8,6 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">{{$contact['title']}}</div>
                 <div class="panel-body">
+                  
                   {{-- informar al usuario de los errores de la clase request --}}
                     {{-- @if(!empty($errors))
                       <ul>
@@ -16,7 +17,8 @@
                         @endforeach
                       </ul>
                     @endif --}}
-                    <form role='form' action="{{url('contacts')}}" method="post" enctype='multipart/form-data'>
+
+                    <form role='form' action="{{url($contact['route'])}}" method="post" enctype='multipart/form-data'>
                       @if(session()->has('msj'))
                         {{-- .alert.alert-success>{{session('msj')}} --}}
                         <div class="alert alert-success">{{session('msj')}}</div>

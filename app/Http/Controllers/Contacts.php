@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Contact;
 use Storage;
 use Session;
+use Illuminate\Support\Facades\Mail;
+use \App\Mail\CreateContacts;
 
 class Contacts extends Controller
 {
@@ -52,12 +54,21 @@ class Contacts extends Controller
         dd($request->name);
     }*/
 
-    public function saveImg($img){;
+    public function saveImg($img){
         $name_file=ltrim(time().'_'.$img->getClientOriginalName());
-        if(Storage::disk('imgContacts')->put($name_file,\File::get($img))){
+        if(\Storage::disk('imgContacts')->put($name_file,\File::get($img))){
             return $name_file;
         }else{
             false;
+        }
+    }
+
+    public function sendMail($request){
+        $data=$request->all();
+        if(Mail::to($data["email"],$data["name"])->send(new CreateContacts($data))){
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -65,14 +76,14 @@ class Contacts extends Controller
         $this->validate($request,[
             'name'=>'required',
             'email'=>'required|email',
-            'contactfile'=>'required'
+            // 'contactfile'=>'required'
         ]);
         $user=\Auth::user();
         $contacts= new \App\Contact();
         $contacts->name=$request->name;
         $contacts->email=$request->email;
 
-       if(!empty($request->contactfile)){
+        if(!empty($request->contactfile)){
             $img=$request->contactfile;
             $nameFile=$this->saveImg($img);
             if($nameFile!=false){
@@ -80,9 +91,15 @@ class Contacts extends Controller
             }
         }
         
+        $enviar=false;
         if($user->contacts()->save($contacts)->save()){
+            $enviar=($this->sendMail($request))?true:false;
             //variable de session
-            return back()->with('msj','Datos guardados con exito');
+            if($enviar){
+                return back()->with('msj','Datos guardados con exito');
+            }else{
+                return back()->with('nomsj','Error enviando el email');
+            }
         }else{
             return back()->with('nomsj','Error en la base de datos');
         }
@@ -120,7 +137,6 @@ class Contacts extends Controller
         );
         Session::forget('msj');
         Session::forget('nomsj');
-
         return view('contacts.create')->with(['contact'=>$arrData]);
 
     }
@@ -199,6 +215,14 @@ class Contacts extends Controller
      */
     public function destroy($id)
     {
-        //
+        $objContact= new Contact();
+        $objContact=$objContact::find($id);
+        if($objContact->delete()){
+            Session::flash('msj','Eliminado con exito');
+            return redirect('home');
+        }else{
+            Session::flash('nomsj','Error al eliinar');
+            return redirect('home');
+        } 
     }
 }
